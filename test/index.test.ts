@@ -1,5 +1,5 @@
 import 'mocha'
-import { 新建表 } from '../src/index'
+import 新建表 from '../src/index'
 import * as tools from '@lsby/js_tools'
 
 describe('测试组', function () {

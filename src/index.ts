@@ -8,7 +8,7 @@ export type 字符串类型转真实类型<S> = S extends '字符串'
 
 export type 条件操作 = '==' | '>' | '<' | '>=' | '<=' | '!=' | '包含' | '永真' | '永假'
 
-function 计算条件操作函数(条件操作: 条件操作) {
+export function 计算条件操作函数(条件操作: 条件操作) {
     if (条件操作 == '!=') return (a: any, b: any) => a != b
     else if (条件操作 == '<') return (a: any, b: any) => a < b
     else if (条件操作 == '<=') return (a: any, b: any) => a <= b
@@ -70,3 +70,5 @@ export function 新建表<列描述 extends { [列名: string]: '字符串' | '�
     }
     return r
 }
+
+export default 新建表
