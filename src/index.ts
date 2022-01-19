@@ -25,8 +25,18 @@ export function 计算条件操作函数(条件操作: 条件操作) {
 type 返回类型<列描述 extends { [列名: string]: '字符串' | '数字' | '布尔值' }> = {
     _数据: { [列名 in keyof 列描述]: 字符串类型转真实类型<列描述[列名]> }[]
     增加: (值: { [列名 in keyof 列描述]: 字符串类型转真实类型<列描述[列名]> }) => 返回类型<列描述>
+    异变增加: (值: { [列名 in keyof 列描述]: 字符串类型转真实类型<列描述[列名]> }) => 返回类型<列描述>
     选择: (条件列名: keyof 列描述, 条件操作: 条件操作, 条件值: string | number | boolean) => 返回类型<列描述>
     修改: <列名 extends keyof 列描述>(
+        操作列名: 列名,
+        操作新值: 字符串类型转真实类型<列描述[列名]>,
+        条件们: {
+            条件列名: keyof 列描述
+            条件操作: 条件操作
+            条件值: string | number | boolean
+        }[],
+    ) => 返回类型<列描述>
+    异变修改: <列名 extends keyof 列描述>(
         操作列名: 列名,
         操作新值: 字符串类型转真实类型<列描述[列名]>,
         条件们: {
@@ -49,6 +59,10 @@ export function 新建表<列描述 extends { [列名: string]: '字符串' | '�
             rx._数据 = Object.assign(r._数据)
             rx._数据.push(值)
             return rx
+        },
+        异变增加(值: { [列名 in keyof 列描述]: 字符串类型转真实类型<列描述[列名]> }) {
+            r._数据.push(值)
+            return r
         },
         选择(条件列名: keyof 列描述, 条件操作: 条件操作, 条件值: string | number | boolean) {
             var 条件操作函数: (a: any, b: any) => boolean = 计算条件操作函数(条件操作)
@@ -81,6 +95,29 @@ export function 新建表<列描述 extends { [列名: string]: '字符串' | '�
                 行[操作列名] = 操作新值
             }
             return rx
+        },
+        异变修改<列名 extends keyof 列描述>(
+            操作列名: 列名,
+            操作新值: 字符串类型转真实类型<列描述[列名]>,
+            条件们: {
+                条件列名: keyof 列描述
+                条件操作: 条件操作
+                条件值: string | number | boolean
+            }[],
+        ) {
+            for (var 行 of r._数据) {
+                var 判断结果 = (function 行满足条件们() {
+                    for (var 条件 of 条件们) {
+                        var 条件操作函数 = 计算条件操作函数(条件.条件操作)
+                        var 判断结果 = 条件操作函数(行[条件.条件列名], 条件.条件值)
+                        if (判断结果 == false) return false
+                    }
+                    return true
+                })()
+                if (判断结果 == false) continue
+                行[操作列名] = 操作新值
+            }
+            return r
         },
         获得数据() {
             return Object.assign(r._数据)
